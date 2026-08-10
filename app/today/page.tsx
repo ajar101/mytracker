@@ -13,10 +13,11 @@ const PRAYER_NAMES: Record<string, string> = {
 };
 const PRAYER_KEYS = ['subuh', 'dzuhur', 'ashar', 'maghrib', 'isya'] as const;
 const PRAYER_STATUSES: { value: PrayerStatus; label: string }[] = [
-  { value: 'tidak',     label: 'Tidak'     },
-  { value: 'dirumah',   label: 'Di Rumah'  },
-  { value: 'berjamaah', label: 'Berjamaah' },
-  { value: 'masjid',    label: 'Masjid'    },
+  { value: 'tidak',          label: 'Tidak' },
+  { value: 'sendiri_rumah',  label: 'Sendiri Di Rumah' },
+  { value: 'sendiri_masjid', label: 'Sendiri Di Masjid' },
+  { value: 'jamaah_rumah',   label: 'Berjamaah Di Rumah' },
+  { value: 'jamaah_masjid',  label: 'Berjamaah di Masjid' },
 ];
 
 // ─── Toggle Component ──────────────────────────────────────────────────────────

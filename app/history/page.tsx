@@ -14,11 +14,11 @@ const MONTH_NAMES = [
 const DAY_LABELS = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 
 const PRAYER_LABEL: Record<PrayerStatus, string> = {
-  tidak: 'Tidak', dirumah: 'Di Rumah', berjamaah: 'Berjamaah', masjid: 'Masjid',
+  tidak: 'Tidak', sendiri_rumah: 'S. Rumah', sendiri_masjid: 'S. Masjid', jamaah_rumah: 'J. Rumah', jamaah_masjid: 'J. Masjid'
 };
 const PRAYER_COLOR: Record<PrayerStatus, string> = {
-  tidak: 'var(--accent-rose)', dirumah: 'var(--accent-gold)',
-  berjamaah: 'var(--accent-blue)', masjid: 'var(--primary)',
+  tidak: 'var(--accent-rose)', sendiri_rumah: 'var(--accent-gold)', sendiri_masjid: 'var(--accent-blue)',
+  jamaah_rumah: 'var(--accent-blue)', jamaah_masjid: 'var(--primary)',
 };
 
 function padZero(n: number) { return n < 10 ? `0${n}` : `${n}`; }
@@ -283,7 +283,7 @@ export default function HistoryPage() {
                     <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' }}>{k}</span>
                     <div style={{ display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
                       {e.timing === 'awal' && <span style={{ fontSize: '0.7rem', color: 'var(--accent-gold)' }}>⭐ Awal</span>}
-                      <span className={`badge ${e.status === 'masjid' ? 'badge-green' : e.status === 'berjamaah' ? 'badge-blue' : e.status === 'dirumah' ? 'badge-gold' : 'badge-rose'}`}>
+                      <span className={`badge ${e.status === 'jamaah_masjid' ? 'badge-green' : (e.status === 'jamaah_rumah' || e.status === 'sendiri_masjid') ? 'badge-blue' : e.status === 'sendiri_rumah' ? 'badge-gold' : 'badge-rose'}`}>
                         {PRAYER_LABEL[e.status]}
                       </span>
                     </div>

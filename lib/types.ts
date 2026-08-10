@@ -1,6 +1,6 @@
 // ─── Prayer Types ───────────────────────────────────────────────────────────
 
-export type PrayerStatus = 'tidak' | 'dirumah' | 'berjamaah' | 'masjid';
+export type PrayerStatus = 'tidak' | 'sendiri_rumah' | 'sendiri_masjid' | 'jamaah_rumah' | 'jamaah_masjid';
 export type PrayerTiming = 'awal' | 'tidak_awal';
 
 export interface PrayerEntry {

@@ -5,18 +5,19 @@ import { getAllDays } from './storage';
 
 const PRAYER_WEIGHTS: Record<PrayerStatus, number> = {
   tidak: 0,
-  dirumah: 1,
-  berjamaah: 2,
-  masjid: 3,
+  sendiri_rumah: 1,
+  sendiri_masjid: 2,
+  jamaah_rumah: 3,
+  jamaah_masjid: 4,
 };
 
 export function scoreIbadah(record: DayRecord): CategoryScore {
   const wajib = record.ibadah.wajib;
   const prayers = [wajib.subuh, wajib.dzuhur, wajib.ashar, wajib.maghrib, wajib.isya];
 
-  // Wajib: each prayer max 3 (masjid) + 1 bonus awal waktu = 4 per prayer → 20 total
+  // Wajib: each prayer max 4 (jamaah_masjid) + 1 bonus awal waktu = 5 per prayer → 25 total
   let achieved = 0;
-  const maxPerPrayer = 4;
+  const maxPerPrayer = 5;
   const total = prayers.length * maxPerPrayer;
 
   prayers.forEach(p => {
@@ -112,7 +113,7 @@ export function scoreDa(record: DayRecord): DayScore {
 function isIbadahComplete(record: DayRecord): boolean {
   const wajib = record.ibadah.wajib;
   return [wajib.subuh, wajib.dzuhur, wajib.ashar, wajib.maghrib, wajib.isya].every(
-    p => p.status === 'berjamaah' || p.status === 'masjid'
+    p => p.status === 'jamaah_rumah' || p.status === 'jamaah_masjid'
   );
 }
 
@@ -168,7 +169,7 @@ export function getWeeklySummary() {
     return (
       sum +
       [wajib.subuh, wajib.dzuhur, wajib.ashar, wajib.maghrib, wajib.isya].filter(
-        p => p.status === 'berjamaah' || p.status === 'masjid'
+        p => p.status === 'jamaah_rumah' || p.status === 'jamaah_masjid'
       ).length
     );
   }, 0);

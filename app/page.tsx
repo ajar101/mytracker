@@ -54,7 +54,7 @@ export default function DashboardPage() {
         <div style={{ maxWidth: 480, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>{greeting}</p>
-            <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text)' }}>MyTracker</h1>
+            <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text)' }}>My Spirit Tracker</h1>
           </div>
           <ThemeToggle />
         </div>

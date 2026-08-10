@@ -72,7 +72,18 @@ export function getDay(date: string): DayRecord {
   if (typeof window === 'undefined') return createEmptyDay(date);
   try {
     const raw = localStorage.getItem(`${DAY_PREFIX}${date}`);
-    if (raw) return JSON.parse(raw) as DayRecord;
+    if (raw) {
+      const record = JSON.parse(raw) as DayRecord;
+      // Sinkronisasi target steps khusus untuk hari ini jika ada perubahan di settings
+      if (date === todayStr()) {
+        const settings = getSettings();
+        if (record.gym.steps.target !== settings.stepsTarget) {
+          record.gym.steps.target = settings.stepsTarget;
+          saveDay(record);
+        }
+      }
+      return record;
+    }
     return createEmptyDay(date);
   } catch {
     return createEmptyDay(date);
