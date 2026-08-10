@@ -1,9 +1,8 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Pencil, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Pencil, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import BottomNav from '@/components/shared/BottomNav';
 import ThemeToggle from '@/components/shared/ThemeToggle';
-import Modal from '@/components/shared/Modal';
 import { getDay, saveDay, todayStr, formatDate } from '@/lib/storage';
 import type { DayRecord, PrayerStatus, PrayerTiming, CustomIbadahItem, WorkoutItem, CustomGeneralItem } from '@/lib/types';
 
@@ -34,8 +33,6 @@ export default function TodayPage() {
   const today = todayStr();
   const [record, setRecord] = useState<DayRecord | null>(null);
   const [expandedPrayer, setExpandedPrayer] = useState<string | null>(null);
-  const [addModal, setAddModal] = useState<'ibadah' | 'gym' | 'custom' | null>(null);
-  const [newItemForm, setNewItemForm] = useState({ name: '', type: 'checklist', target: '', unit: '' });
 
   useEffect(() => {
     setRecord(getDay(today));
@@ -118,36 +115,6 @@ export default function TodayPage() {
     });
   };
 
-  // ─── Add Item Handler ─────────────────────────────────────────────────────
-  const handleAddItem = () => {
-    if (!newItemForm.name.trim() || !addModal) return;
-    const id = `custom_${Date.now()}`;
-
-    if (addModal === 'ibadah') {
-      const newItem: CustomIbadahItem = {
-        id, name: newItemForm.name, type: newItemForm.type as 'checklist' | 'number',
-        done: false, unit: newItemForm.unit || undefined,
-        value: undefined, active: true,
-      };
-      save({ ...record, ibadah: { ...record.ibadah, custom: [...record.ibadah.custom, newItem] } });
-    } else if (addModal === 'gym') {
-      const newItem: WorkoutItem = {
-        id, name: newItemForm.name, target: Number(newItemForm.target) || 0,
-        actual: 0, unit: newItemForm.unit || 'x', active: true,
-      };
-      save({ ...record, gym: { ...record.gym, custom: [...record.gym.custom, newItem] } });
-    } else if (addModal === 'custom') {
-      const newItem: CustomGeneralItem = {
-        id, name: newItemForm.name, type: newItemForm.type as 'checklist' | 'number',
-        done: false, target: Number(newItemForm.target) || undefined,
-        unit: newItemForm.unit || undefined, value: undefined, active: true,
-      };
-      save({ ...record, custom_general: [...record.custom_general, newItem] });
-    }
-
-    setNewItemForm({ name: '', type: 'checklist', target: '', unit: '' });
-    setAddModal(null);
-  };
 
   const stepsPercent = record.gym.steps.target > 0
     ? Math.min((record.gym.steps.actual / record.gym.steps.target) * 100, 100)
@@ -179,9 +146,6 @@ export default function TodayPage() {
         <section className="animate-fade-up" style={{ marginBottom: '1rem' }}>
           <div className="section-header">
             <span className="section-title">🕌 Ibadah</span>
-            <button className="btn-ghost" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }} onClick={() => setAddModal('ibadah')}>
-              <Plus size={13} /> Tambah
-            </button>
           </div>
 
           {/* Shalat Wajib */}
@@ -310,9 +274,6 @@ export default function TodayPage() {
         <section className="animate-fade-up-1" style={{ marginBottom: '1rem' }}>
           <div className="section-header">
             <span className="section-title">💪 Gym & Workout</span>
-            <button className="btn-ghost" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }} onClick={() => setAddModal('gym')}>
-              <Plus size={13} /> Tambah
-            </button>
           </div>
 
           {/* Steps */}
@@ -396,15 +357,12 @@ export default function TodayPage() {
         <section className="animate-fade-up-2">
           <div className="section-header">
             <span className="section-title">✨ Custom</span>
-            <button className="btn-ghost" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }} onClick={() => setAddModal('custom')}>
-              <Plus size={13} /> Tambah
-            </button>
           </div>
 
           {record.custom_general.length === 0 ? (
             <div className="card" style={{ textAlign: 'center', padding: '2rem 1.25rem' }}>
               <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📝</p>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Belum ada item custom. Tap "+ Tambah" untuk mulai.</p>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Belum ada item custom. Tambahkan di halaman Settings.</p>
             </div>
           ) : (
             <div className="card">
@@ -442,81 +400,7 @@ export default function TodayPage() {
         </section>
       </div>
 
-      {/* ── ADD ITEM MODAL ── */}
-      <Modal
-        isOpen={!!addModal}
-        onClose={() => { setAddModal(null); setNewItemForm({ name: '', type: 'checklist', target: '', unit: '' }); }}
-        title={`Tambah Item ${addModal === 'ibadah' ? 'Ibadah' : addModal === 'gym' ? 'Workout' : 'Custom'}`}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
-          <div>
-            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-              Nama Item *
-            </label>
-            <input
-              type="text"
-              className="input-field"
-              placeholder={addModal === 'ibadah' ? 'Contoh: Tilawah Qur\'an' : addModal === 'gym' ? 'Contoh: Push-Up' : 'Contoh: Baca Buku'}
-              value={newItemForm.name}
-              onChange={e => setNewItemForm(f => ({ ...f, name: e.target.value }))}
-              autoFocus
-            />
-          </div>
 
-          {addModal !== 'gym' && (
-            <div>
-              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-                Tipe Input
-              </label>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                {(['checklist', 'number'] as const).map(t => (
-                  <button
-                    key={t}
-                    className={`radio-pill ${newItemForm.type === t ? 'active-masjid' : ''}`}
-                    onClick={() => setNewItemForm(f => ({ ...f, type: t }))}
-                    style={{ flex: 1, padding: '0.5rem' }}
-                  >
-                    {t === 'checklist' ? '✓ Checklist' : '# Angka'}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {(addModal === 'gym' || newItemForm.type === 'number') && (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-                  Target
-                </label>
-                <input
-                  type="number"
-                  className="input-field"
-                  placeholder="100"
-                  value={newItemForm.target}
-                  onChange={e => setNewItemForm(f => ({ ...f, target: e.target.value }))}
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-                  Satuan
-                </label>
-                <input
-                  type="text"
-                  className="input-field"
-                  placeholder={addModal === 'gym' ? 'x / kg / km' : 'halaman / L'}
-                  value={newItemForm.unit}
-                  onChange={e => setNewItemForm(f => ({ ...f, unit: e.target.value }))}
-                />
-              </div>
-            </div>
-          )}
-
-          <button className="btn-primary" style={{ width: '100%', marginTop: '0.5rem' }} onClick={handleAddItem}>
-            Simpan Item
-          </button>
-        </div>
-      </Modal>
 
       <BottomNav />
     </div>

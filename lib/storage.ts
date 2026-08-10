@@ -74,13 +74,48 @@ export function getDay(date: string): DayRecord {
     const raw = localStorage.getItem(`${DAY_PREFIX}${date}`);
     if (raw) {
       const record = JSON.parse(raw) as DayRecord;
-      // Sinkronisasi target steps khusus untuk hari ini jika ada perubahan di settings
+      // Sinkronisasi khusus untuk hari ini jika ada perubahan di settings
       if (date === todayStr()) {
         const settings = getSettings();
+        let changed = false;
+        
         if (record.gym.steps.target !== settings.stepsTarget) {
           record.gym.steps.target = settings.stepsTarget;
-          saveDay(record);
+          changed = true;
         }
+
+        // Sinkronisasi item custom (tambah yang baru aktif, hapus yang tidak aktif, pertahankan progress)
+        const activeIbadah = settings.customIbadahItems.filter(i => i.active);
+        const newIbadah = activeIbadah.map(ai => {
+          const existing = record.ibadah.custom.find(c => c.id === ai.id);
+          return existing ? { ...ai, done: existing.done, value: existing.value } : { ...ai, done: false, value: undefined };
+        });
+        if (JSON.stringify(record.ibadah.custom) !== JSON.stringify(newIbadah)) {
+          record.ibadah.custom = newIbadah;
+          changed = true;
+        }
+
+        const activeWorkout = settings.customWorkoutItems.filter(i => i.active);
+        const newWorkout = activeWorkout.map(aw => {
+          const existing = record.gym.custom.find(c => c.id === aw.id);
+          return existing ? { ...aw, actual: existing.actual } : { ...aw, actual: 0 };
+        });
+        if (JSON.stringify(record.gym.custom) !== JSON.stringify(newWorkout)) {
+          record.gym.custom = newWorkout;
+          changed = true;
+        }
+
+        const activeGeneral = settings.customGeneralItems.filter(i => i.active);
+        const newGeneral = activeGeneral.map(ag => {
+          const existing = record.custom_general.find(c => c.id === ag.id);
+          return existing ? { ...ag, done: existing.done, value: existing.value } : { ...ag, done: false, value: undefined };
+        });
+        if (JSON.stringify(record.custom_general) !== JSON.stringify(newGeneral)) {
+          record.custom_general = newGeneral;
+          changed = true;
+        }
+
+        if (changed) saveDay(record);
       }
       return record;
     }
