@@ -1,0 +1,284 @@
+/* ─── Google Fonts ──────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+/* ─── Custom Theme Tokens ───────────────────────────────────────────────────── */
+@theme inline {
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-glow: var(--primary-glow);
+  --color-accent-gold: var(--accent-gold);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-rose: var(--accent-rose);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+}
+
+/* ─── Dark Mode (Default) ───────────────────────────────────────────────────── */
+:root {
+  --bg:             #0d1117;
+  --surface:        #161b22;
+  --surface-2:      #1e2730;
+  --border:         #2a3340;
+  --text:           #e6edf3;
+  --text-muted:     #8b949e;
+  --primary:        #22c55e;
+  --primary-light:  #4ade80;
+  --primary-glow:   rgba(34, 197, 94, 0.15);
+  --accent-gold:    #f59e0b;
+  --accent-blue:    #3b82f6;
+  --accent-rose:    #f43f5e;
+}
+
+/* ─── Light Mode ────────────────────────────────────────────────────────────── */
+.light {
+  --bg:             #f0f4f8;
+  --surface:        #ffffff;
+  --surface-2:      #f8fafc;
+  --border:         #e2e8f0;
+  --text:           #0f172a;
+  --text-muted:     #64748b;
+  --primary:        #16a34a;
+  --primary-light:  #22c55e;
+  --primary-glow:   rgba(22, 163, 74, 0.12);
+  --accent-gold:    #d97706;
+  --accent-blue:    #2563eb;
+  --accent-rose:    #e11d48;
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overscroll-behavior-y: none;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* ─── PWA / iOS Safe Area ───────────────────────────────────────────────────── */
+.safe-top    { padding-top:    max(env(safe-area-inset-top), 1rem); }
+.safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 1rem); }
+
+/* ─── Reusable Component Classes ───────────────────────────────────────────── */
+
+/* Card */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+}
+
+.card-sm {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+/* Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--primary-glow); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--primary); background: var(--primary-glow); }
+
+/* Tag/Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+}
+.badge-green  { background: rgba(34,197,94,0.15);  color: #4ade80; }
+.badge-gold   { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.badge-blue   { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.badge-rose   { background: rgba(244,63,94,0.15);  color: #fb7185; }
+
+/* Radio Pill for prayer status */
+.radio-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.5rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  user-select: none;
+}
+.radio-pill.active-tidak     { border-color: var(--accent-rose);  background: rgba(244,63,94,0.15);   color: #fb7185; }
+.radio-pill.active-dirumah   { border-color: var(--accent-gold);  background: rgba(245,158,11,0.15);  color: #fbbf24; }
+.radio-pill.active-berjamaah { border-color: var(--accent-blue);  background: rgba(59,130,246,0.15);  color: #60a5fa; }
+.radio-pill.active-masjid    { border-color: var(--primary);      background: var(--primary-glow);    color: #4ade80; }
+
+/* Toggle / Switch */
+.toggle-track {
+  width: 2.5rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-2);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+.toggle-track.on {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-track.on .toggle-thumb {
+  transform: translateX(1.125rem);
+}
+
+/* Progress Bar */
+.progress-bar-track {
+  width: 100%;
+  height: 0.5rem;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Input */
+.input-field {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+.input-field::placeholder { color: var(--text-muted); }
+
+/* Section Header */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Page wrapper */
+.page-content {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem 1rem 6rem;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-ring {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.animate-fade-up { animation: fadeUp 0.4s ease both; }
+.animate-fade-up-1 { animation: fadeUp 0.4s 0.05s ease both; }
+.animate-fade-up-2 { animation: fadeUp 0.4s 0.10s ease both; }
+.animate-fade-up-3 { animation: fadeUp 0.4s 0.15s ease both; }
+.animate-fade-up-4 { animation: fadeUp 0.4s 0.20s ease both; }
+
+/* Glow effects */
+.glow-green { box-shadow: 0 0 24px var(--primary-glow); }
+.glow-gold  { box-shadow: 0 0 24px rgba(245,158,11,0.2); }
+.glow-blue  { box-shadow: 0 0 24px rgba(59,130,246,0.2); }
