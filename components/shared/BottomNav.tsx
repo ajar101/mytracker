@@ -1,12 +1,13 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, CalendarCheck, History, Settings } from 'lucide-react';
+import { LayoutDashboard, CalendarCheck, History, BarChart2, Settings } from 'lucide-react';
 
 const TABS = [
-  { href: '/',         icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/today',   icon: CalendarCheck,    label: 'Today'     },
-  { href: '/history', icon: History,          label: 'History'   },
-  { href: '/settings',icon: Settings,         label: 'Settings'  },
+  { href: '/',            icon: LayoutDashboard, label: 'Home'      },
+  { href: '/today',       icon: CalendarCheck,   label: 'Today'     },
+  { href: '/history',     icon: History,         label: 'History'   },
+  { href: '/statistics',  icon: BarChart2,        label: 'Stats'     },
+  { href: '/settings',    icon: Settings,         label: 'Settings'  },
 ];
 
 export default function BottomNav() {
@@ -29,7 +30,7 @@ export default function BottomNav() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(5, 1fr)',
           maxWidth: 480,
           margin: '0 auto',
         }}
@@ -45,8 +46,8 @@ export default function BottomNav() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '0.25rem',
-                padding: '0.625rem 0',
+                gap: '0.2rem',
+                padding: '0.5rem 0',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
@@ -56,8 +57,8 @@ export default function BottomNav() {
             >
               <div
                 style={{
-                  width: '2.5rem',
-                  height: '2rem',
+                  width: '2.25rem',
+                  height: '1.75rem',
                   borderRadius: '0.75rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -66,9 +67,9 @@ export default function BottomNav() {
                   transition: 'all 0.2s ease',
                 }}
               >
-                <Icon size={20} strokeWidth={isActive ? 2.5 : 1.8} />
+                <Icon size={18} strokeWidth={isActive ? 2.5 : 1.8} />
               </div>
-              <span style={{ fontSize: '0.65rem', fontWeight: isActive ? 700 : 500 }}>
+              <span style={{ fontSize: '0.6rem', fontWeight: isActive ? 700 : 500 }}>
                 {label}
               </span>
             </button>
