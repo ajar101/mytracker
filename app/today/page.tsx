@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { Pencil, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import BottomNav from '@/components/shared/BottomNav';
 import ThemeToggle from '@/components/shared/ThemeToggle';
 import { getDay, saveDay, todayStr, formatDate } from '@/lib/storage';
-import type { DayRecord, PrayerStatus, PrayerTiming, CustomIbadahItem, WorkoutItem, CustomGeneralItem } from '@/lib/types';
+import type { DayRecord, PrayerStatus, PrayerTiming } from '@/lib/types';
 
 // ─── Prayer Name Map ──────────────────────────────────────────────────────────
 const PRAYER_NAMES: Record<string, string> = {
@@ -366,35 +366,72 @@ export default function TodayPage() {
             </div>
           ) : (
             <div className="card">
-              {record.custom_general.map((item, i) => (
-                <div
-                  key={item.id}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.625rem 0',
-                    borderBottom: i < record.custom_general.length - 1 ? '1px solid var(--border)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                    <Toggle on={item.done} onToggle={() => setCustomGeneral(item.id, !item.done)} />
-                    <div>
-                      <p style={{ fontSize: '0.875rem', color: item.done ? 'var(--text-muted)' : 'var(--text)', textDecoration: item.done ? 'line-through' : 'none', fontWeight: 500 }}>
-                        {item.name}
-                      </p>
-                      {item.target && <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Target: {item.target} {item.unit}</p>}
+              {record.custom_general.map((item, i) => {
+                const isNum = item.type === 'number';
+                const pct = isNum && item.target && item.target > 0 
+                  ? Math.min(((item.value || 0) / item.target) * 100, 100) 
+                  : item.done ? 100 : 0;
+                
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      padding: '0.75rem 0',
+                      borderBottom: i < record.custom_general.length - 1 ? '1px solid var(--border)' : 'none',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text)' }}>{item.name}</p>
+                      {isNum && item.target ? (
+                        <p style={{ fontSize: '0.8rem', color: pct >= 100 ? 'var(--accent-gold)' : 'var(--text-muted)' }}>
+                          {item.value || 0}/{item.target} {item.unit || ''}
+                        </p>
+                      ) : (
+                        <p style={{ fontSize: '0.8rem', color: item.done ? 'var(--accent-gold)' : 'var(--text-muted)' }}>
+                          {item.done ? 'Selesai' : 'Belum'}
+                        </p>
+                      )}
                     </div>
+                    
+                    <div className="progress-bar-track" style={{ marginBottom: '0.75rem' }}>
+                      <div className="progress-bar-fill" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, var(--accent-gold), #fde68a)' }} />
+                    </div>
+                    
+                    {isNum ? (
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input
+                          type="number"
+                          className="input-field"
+                          placeholder={`Realisasi (${item.unit || ''})`}
+                          value={item.value || ''}
+                          onChange={e => setCustomGeneral(item.id, item.done, Number(e.target.value))}
+                          style={{ flex: 1 }}
+                        />
+                        <button 
+                          className="btn-ghost" 
+                          style={{ flex: 1, color: pct >= 100 ? 'var(--accent-gold)' : 'var(--text-muted)' }}
+                          onClick={() => setCustomGeneral(item.id, true, item.target || (item.value || 0))}
+                        >
+                          Maksimal
+                        </button>
+                      </div>
+                    ) : (
+                      <button 
+                        className="btn-ghost" 
+                        style={{ 
+                          width: '100%', 
+                          background: item.done ? 'var(--accent-gold)' : 'transparent', 
+                          color: item.done ? '#000' : 'var(--text)',
+                          borderColor: item.done ? 'var(--accent-gold)' : 'var(--border)'
+                        }}
+                        onClick={() => setCustomGeneral(item.id, !item.done)}
+                      >
+                        {item.done ? '✓ Sudah Diselesaikan' : 'Tandai Selesai'}
+                      </button>
+                    )}
                   </div>
-                  {item.type === 'number' && (
-                    <input
-                      type="number"
-                      className="input-field"
-                      style={{ width: '5rem', textAlign: 'center' }}
-                      placeholder="0"
-                      value={item.value ?? ''}
-                      onChange={e => setCustomGeneral(item.id, item.done, Number(e.target.value))}
-                    />
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>

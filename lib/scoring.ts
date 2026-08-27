@@ -34,7 +34,14 @@ export function scoreIbadah(record: DayRecord): CategoryScore {
   // Custom ibadah: each done = 2 pts
   const customItems = record.ibadah.custom.filter(c => c.active !== false);
   const customMax = customItems.length * 2;
-  const customAchieved = customItems.filter(c => c.done).length * 2;
+  let customAchieved = 0;
+  customItems.forEach(c => {
+    if (c.type === 'number') {
+      if (c.value && c.value > 0) customAchieved += 2;
+    } else {
+      if (c.done) customAchieved += 2;
+    }
+  });
 
   const grandTotal = total + sunnahMax + customMax;
   const grandAchieved = achieved + sunnahAchieved + customAchieved;
